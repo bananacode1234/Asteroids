@@ -4,12 +4,14 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
-public class Game extends JFrame implements KeyListener, ActionListener {
+public class Game extends JFrame implements KeyListener, ActionListener, MouseListener {
 
     public final static int width = 900;
     public final static int height = 600;
 
     final int startingAsteroids = 6;
+
+    public boolean started = false;
 
     public double fps = 60;
 
@@ -17,25 +19,23 @@ public class Game extends JFrame implements KeyListener, ActionListener {
 
     public Spacecraft ship;
 
-    public ThrustSprite thrusterSprite;
-
     public ArrayList<Asteroid> asteroidList;
 
     public ArrayList<Bullet> bulletList;
 
     Timer timer;
 
-    AudioUtil au;
-
     boolean thrusterPlaying;
 
     int fireDelay = 5;
 
-    NewAudioUtil audioUtil;
+    AudioUtil audioUtil;
 
     boolean upKey, rightKey, leftKey, downKey, spaceKey, impulseKey;
 
     public Game() {
+        started = false;
+
         this.setVisible(true);
         this.setSize(width, height);
         this.setTitle("rock go brrrrr");
@@ -43,41 +43,11 @@ public class Game extends JFrame implements KeyListener, ActionListener {
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         this.addKeyListener(this);
+        this.addMouseListener(this);
 
         try {
-            audioUtil = new NewAudioUtil();
+            audioUtil = new AudioUtil();
         } catch (Exception ignored) {}
-
-        ship = new Spacecraft(
-                new int[][]{
-                        {15, 0},
-                        {-10, 10},
-                        {-10, -10}
-                });
-
-        thrusterSprite = new ThrustSprite(
-                new int[][]{
-                        {-14, 10}, {-30, 15}, {-25, 6}, {-35, 0},
-                        {-25, -6}, {-30, -15}, {-14, -10}
-                }
-        );
-
-        asteroidList = new ArrayList<>();
-
-        for (int i = 0; i < startingAsteroids; i++) {
-            asteroidList.add(new Asteroid(new int[][]{
-                    {30, 12},
-                    {30, (int) ((Math.random() + 1) * 20)},
-                    {-25, 17},
-                    {-22, -19},
-                    {20, -(int) ((Math.random() + 1) * 15)}
-            }));
-        }
-
-        bulletList = new ArrayList<>();
-
-        timer = new Timer((int) (1000 / fps), this);
-        timer.start();
 
         this.add(this.panel = new Window(this), BorderLayout.CENTER);
 
@@ -96,21 +66,18 @@ public class Game extends JFrame implements KeyListener, ActionListener {
             ship.immuneTimer++;
         }
 
-        thrusterSprite.setPosition(ship.xPosition, ship.yPosition, ship.angle);
-        thrusterSprite.updatePosition();
-
         for (int i = asteroidList.size() - 1; i >= 0; i--) {
             asteroidList.get(i).updateAsteroid();
             asteroidList.get(i).updatePosition();
 
             if (!asteroidList.get(i).active) {
                 if (Math.random() >= 0.5) {
-                    audioUtil.clips[3].setFramePosition(0);
                     audioUtil.clips[3].stop();
+                    audioUtil.clips[3].setFramePosition(0);
                     audioUtil.clips[3].start();
                 } else {
-                    audioUtil.clips[4].setFramePosition(0);
                     audioUtil.clips[4].stop();
+                    audioUtil.clips[4].setFramePosition(0);
                     audioUtil.clips[4].start();
                 }
 
@@ -193,9 +160,15 @@ public class Game extends JFrame implements KeyListener, ActionListener {
         if (ship.frameCounter > fireDelay && ship.active) {
             ship.frameCounter = 0;
 
-            audioUtil.clips[1].setFramePosition(0);
-            audioUtil.clips[1].stop();
-            audioUtil.clips[1].start();
+            if (Math.random() >= 0.5) {
+                audioUtil.clips[1].stop();
+                audioUtil.clips[0].setFramePosition(0);
+                audioUtil.clips[0].start();
+            } else {
+                audioUtil.clips[1].stop();
+                audioUtil.clips[1].setFramePosition(0);
+                audioUtil.clips[1].start();
+            }
 
             bulletList.add(new Bullet(
                     new int[][]{
@@ -205,8 +178,8 @@ public class Game extends JFrame implements KeyListener, ActionListener {
                             {2, -2},
                             {4, 0}
                     },
-                    ship.xPosition,
-                    ship.yPosition,
+                    ship.xPosition + Math.cos(ship.angle) * 10,
+                    ship.yPosition + Math.sin(ship.angle) * 10,
                     ship.angle,
                     ship.xSpeed,
                     ship.ySpeed
@@ -214,8 +187,7 @@ public class Game extends JFrame implements KeyListener, ActionListener {
         }
     }
 
-    public void restartGame() {
-        // TODO: dry
+    public void startGame() {
         ship = new Spacecraft(
                 new int[][]{
                         {15, 0},
@@ -239,6 +211,8 @@ public class Game extends JFrame implements KeyListener, ActionListener {
 
         timer = new Timer((int) (1000 / fps), this);
         timer.start();
+
+        started = true;
     }
 
     public void keyCheck() {
@@ -254,7 +228,7 @@ public class Game extends JFrame implements KeyListener, ActionListener {
 
         if (impulseKey) impulseForce(100);
 
-        if (upKey || downKey) {
+        if (started && ship.active && (upKey || downKey)) {
             if (!thrusterPlaying) {
                 thrusterPlaying = true;
                 audioUtil.clips[2].setFramePosition(0);
@@ -316,6 +290,31 @@ public class Game extends JFrame implements KeyListener, ActionListener {
 
     @Override
     public void keyTyped(KeyEvent e) {
+
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        spaceKey = true;
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        spaceKey = false;
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
 
     }
 }

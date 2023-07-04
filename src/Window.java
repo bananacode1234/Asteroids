@@ -2,10 +2,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 
 public class Window extends JPanel {
     private Game game;
-    private JButton restart;
+    private JButton start;
+    private JButton quit;
+    private Dimension startSize;
 
     public Window(Game game) {
         this.game = game;
@@ -16,28 +19,50 @@ public class Window extends JPanel {
 
         this.setLayout(null);
 
-        restart = new JButton("Restart");
+        start = new JButton("Start");
 
-        restart.setFocusable(false);
+        start.setFocusable(false);
 
-        Dimension restartSize = restart.getPreferredSize();
+        startSize = start.getPreferredSize();
 
-        restart.setBounds(Game.width / 2 - restartSize.width / 2, Game.height - 250, restartSize.width, restartSize.height);
+        start.setBounds(Game.width / 2 - startSize.width / 2, Game.height - 250, startSize.width, startSize.height);
 
-        restart.setBackground(Color.GREEN);
-        restart.setForeground(Color.BLACK);
+        start.setBackground(Color.GREEN);
+        start.setForeground(Color.BLACK);
 
-        restart.addActionListener(new ActionListener() {
+        start.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                game.timer.stop();
-                game.restartGame();
-                restart.setVisible(false);
+                if (game.started) game.timer.stop();
+                game.startGame();
+                start.setVisible(false);
+                quit.setVisible(false);
             }
         });
 
-        this.add(restart);
-        restart.setVisible(false);
+        this.add(start);
+
+        start.setVisible(false);
+
+        quit = new JButton("Quit");
+
+        quit.setFocusable(false);
+
+        quit.setBounds(Game.width / 2 - startSize.width / 2, Game.height - 200, startSize.width, startSize.height);
+
+        quit.setBackground(Color.GREEN);
+        quit.setForeground(Color.BLACK);
+
+        quit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                game.dispatchEvent(new WindowEvent(game, WindowEvent.WINDOW_CLOSING));
+            }
+        });
+
+        this.add(quit);
+
+        quit.setVisible(true);
     }
 
     @Override
@@ -50,39 +75,50 @@ public class Window extends JPanel {
         g2d.fillRect(0, 0, Game.width, Game.height);
         g2d.setColor(Color.GREEN);
 
-        if (game.asteroidList.isEmpty()) {
-            g2d.setColor(Color.GREEN);
-            g2d.setFont(new Font("sans-serif", Font.PLAIN, 25));
-            printSimpleString("Game over - You win", Game.width / 2, Game.height / 2, g2d);
-        }
-
-        if (game.ship.active) {
-            if (game.ship.immuneTimer < game.ship.immuneTime) {
-                ImmunityRing ring = new ImmunityRing(game.ship.xPosition - 20, game.ship.yPosition - 20, 360 - game.ship.immuneTimer * ((double) 360 / game.ship.immuneTime));
-                g2d.draw(ring.ring);
+        if (game.started) {
+            if (game.asteroidList.isEmpty()) {
+                g2d.setColor(Color.GREEN);
+                g2d.setFont(new Font("sans-serif", Font.PLAIN, 25));
+                printSimpleString("Game over - You win", Game.width / 2, Game.height / 2, g2d);
             }
 
-            game.ship.paint(g2d);
+            if (game.ship.active) {
+                if (game.ship.immuneTimer < game.ship.immuneTime) {
+                    ImmunityRing ring = new ImmunityRing(game.ship.xPosition - 20, game.ship.yPosition - 20, 360 - game.ship.immuneTimer * ((double) 360 / game.ship.immuneTime));
+                    g2d.draw(ring.ring);
+                }
 
-            if (game.upKey) game.thrusterSprite.paint(g2d);
-        }
+                game.ship.paint(g2d);
+            }
 
-        for (Asteroid asteroid : game.asteroidList) {
-            if (asteroid.active) asteroid.paint(g2d);
-        }
+            for (Asteroid asteroid : game.asteroidList) {
+                if (asteroid.active) asteroid.paint(g2d);
+            }
 
-        for (Bullet bullet : game.bulletList) {
-            if (bullet.active) bullet.paint(g2d);
-        }
+            for (Bullet bullet : game.bulletList) {
+                if (bullet.active) bullet.paint(g2d);
+            }
 
-        g2d.setColor(Color.GREEN);
-        if (game.ship.lives > 0) {
-            g2d.setFont(new Font("sans-serif", Font.BOLD, 12));
-            printSimpleString("Lives: " + game.ship.lives, Game.width / 2, 25, g2d);
+            g2d.setColor(Color.GREEN);
+            if (game.ship.lives > 0) {
+                g2d.setFont(new Font("sans-serif", Font.BOLD, 12));
+                printSimpleString("Lives: " + game.ship.lives, Game.width / 2, 25, g2d);
+            } else {
+                start.setText("Restart");
+                startSize = start.getPreferredSize();
+                start.setBounds(Game.width / 2 - startSize.width / 2, Game.height - 250, startSize.width, startSize.height);
+                start.setVisible(true);
+                quit.setVisible(true);
+                g2d.setFont(new Font("sans-serif", Font.PLAIN, 25));
+                printSimpleString("Game over - You lose", Game.width / 2, Game.height / 2, g2d);
+            }
         } else {
-            restart.setVisible(true);
             g2d.setFont(new Font("sans-serif", Font.PLAIN, 25));
-            printSimpleString("Game over - You lose", Game.width / 2, Game.height / 2, g2d);
+            printSimpleString("Welcome to rock go brrrr!", Game.width / 2, Game.height / 2, g2d);
+            startSize = start.getPreferredSize();
+            start.setBounds(Game.width / 2 - startSize.width / 2, Game.height - 250, startSize.width, startSize.height);
+            start.setText("Start");
+            start.setVisible(true);
         }
     }
 
