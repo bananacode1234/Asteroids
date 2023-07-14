@@ -4,7 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
-public class Game extends JFrame implements KeyListener, ActionListener, MouseListener {
+public class Game extends JFrame implements KeyListener, ActionListener {
 
     public final static int width = 900;
     public final static int height = 600;
@@ -43,11 +43,12 @@ public class Game extends JFrame implements KeyListener, ActionListener, MouseLi
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         this.addKeyListener(this);
-        this.addMouseListener(this);
 
         try {
             audioUtil = new AudioUtil();
-        } catch (Exception ignored) {}
+        } catch (Exception e) {
+            System.out.println(e);
+        }
 
         this.add(this.panel = new Window(this), BorderLayout.CENTER);
 
@@ -290,31 +291,6 @@ public class Game extends JFrame implements KeyListener, ActionListener, MouseLi
 
     @Override
     public void keyTyped(KeyEvent e) {
-
-    }
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-        spaceKey = true;
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        spaceKey = false;
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
 
     }
 }

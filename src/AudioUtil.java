@@ -10,17 +10,17 @@ public class AudioUtil implements LineListener {
     public AudioUtil() throws UnsupportedAudioFileException, IOException, LineUnavailableException {
         clips = new Clip[5];
 
-        audioInputStream = AudioSystem.getAudioInputStream(new File("./src/Sounds/laser79.wav").getAbsoluteFile());
+        audioInputStream = AudioSystem.getAudioInputStream(new File("./Assets/Sounds/laser79.wav").getAbsoluteFile());
 
         clips[0] = AudioSystem.getClip();
         clips[0].open(audioInputStream);
 
-        audioInputStream = AudioSystem.getAudioInputStream(new File("./src/Sounds/laser80.wav").getAbsoluteFile());
+        audioInputStream = AudioSystem.getAudioInputStream(new File("./Assets/Sounds/laser80.wav").getAbsoluteFile());
 
         clips[1] = AudioSystem.getClip();
         clips[1].open(audioInputStream);
 
-        audioInputStream = AudioSystem.getAudioInputStream(new File("./src/Sounds/thruster.wav").getAbsoluteFile());
+        audioInputStream = AudioSystem.getAudioInputStream(new File("./Assets/Sounds/thruster.wav").getAbsoluteFile());
 
         AudioFormat format = audioInputStream.getFormat();
         DataLine.Info info = new DataLine.Info(Clip.class, format);
@@ -28,12 +28,12 @@ public class AudioUtil implements LineListener {
         clips[2] = AudioSystem.getClip();
         clips[2].open(audioInputStream);
 
-        audioInputStream = AudioSystem.getAudioInputStream(new File("./src/Sounds/explode0.wav").getAbsoluteFile());
+        audioInputStream = AudioSystem.getAudioInputStream(new File("./Assets/Sounds/explode0.wav").getAbsoluteFile());
 
         clips[3] = AudioSystem.getClip();
         clips[3].open(audioInputStream);
 
-        audioInputStream = AudioSystem.getAudioInputStream(new File("./src/Sounds/explode1.wav").getAbsoluteFile());
+        audioInputStream = AudioSystem.getAudioInputStream(new File("./Assets/Sounds/explode1.wav").getAbsoluteFile());
 
         clips[4] = AudioSystem.getClip();
         clips[4].open(audioInputStream);
