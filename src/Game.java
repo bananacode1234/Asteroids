@@ -31,7 +31,11 @@ public class Game extends JFrame implements KeyListener, ActionListener {
 
     AudioUtil audioUtil;
 
-    boolean upKey, rightKey, leftKey, downKey, spaceKey, impulseKey;
+    boolean upKey;
+    boolean rightKey;
+    boolean leftKey;
+    boolean downKey;
+    boolean spaceKey;
 
     public Game() {
         started = false;
@@ -46,9 +50,7 @@ public class Game extends JFrame implements KeyListener, ActionListener {
 
         try {
             audioUtil = new AudioUtil();
-        } catch (Exception e) {
-            System.out.println(e);
-        }
+        } catch (Exception ignored) {}
 
         this.add(this.panel = new Window(this), BorderLayout.CENTER);
 
@@ -227,8 +229,6 @@ public class Game extends JFrame implements KeyListener, ActionListener {
 
         if (spaceKey) fireBullet();
 
-        if (impulseKey) impulseForce(100);
-
         if (started && ship.active && (upKey || downKey)) {
             if (!thrusterPlaying) {
                 thrusterPlaying = true;
@@ -259,9 +259,6 @@ public class Game extends JFrame implements KeyListener, ActionListener {
             case KeyEvent.VK_SPACE -> {
                 spaceKey = true;
             }
-            case KeyEvent.VK_E -> {
-                impulseKey = true;
-            }
         }
     }
 
@@ -282,9 +279,6 @@ public class Game extends JFrame implements KeyListener, ActionListener {
             }
             case KeyEvent.VK_SPACE -> {
                 spaceKey = false;
-            }
-            case KeyEvent.VK_E -> {
-                impulseKey = false;
             }
         }
     }
