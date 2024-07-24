@@ -42,7 +42,7 @@ public class Game extends JFrame implements KeyListener, ActionListener {
 
         this.setVisible(true);
         this.setSize(width, height);
-        this.setTitle("rock go brrrrr");
+        this.setTitle("Asteroids");
         this.setResizable(false);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 

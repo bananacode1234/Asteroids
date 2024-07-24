@@ -114,7 +114,7 @@ public class Window extends JPanel {
             }
         } else {
             g2d.setFont(new Font("sans-serif", Font.PLAIN, 25));
-            printSimpleString("Welcome to rock go brrrr!", Game.width / 2, Game.height / 2, g2d);
+            printSimpleString("Welcome to Asteroids!", Game.width / 2, Game.height / 2, g2d);
             startSize = start.getPreferredSize();
             start.setBounds(Game.width / 2 - startSize.width / 2, Game.height - 250, startSize.width, startSize.height);
             start.setText("Start");
